@@ -1,0 +1,1 @@
+export { QnaView } from "./QnaView";
