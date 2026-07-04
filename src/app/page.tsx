@@ -1,8 +1,7 @@
 "use client";
 import { useAtomValue } from "jotai";
 import { Container, Flex, Heading, Text } from "@radix-ui/themes";
-import { EVENT_NAME } from "@/shared/config";
-import { NAV_GROUPS } from "@/shared/config";
+import { EVENT_NAME, NAV_GROUPS } from "@/shared/config";
 import { Section, FeatureCard } from "@/shared/ui-kit";
 import { hasRegisteredCardAtom, myCardAtom } from "@/entities/card";
 
