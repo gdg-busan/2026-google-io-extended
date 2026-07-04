@@ -1,11 +1,224 @@
 rules_version = '2';
 
-// Skeleton only — real read/write policy (public-read collections, owner
-// field whitelist via affectedKeys, likes create-only, cardRecovery
-// deny-all) lands in task #2 alongside emulator rule tests.
-// See .omc/plans/ralplan-io2026-builder-board.md — "Firestore 보안 규칙".
+// Firestore security rules for the io2026 Builder Board.
+// Spec: .omc/plans/ralplan-io2026-builder-board.md — "Firestore 보안 규칙" section
+// and the data model table. Task #2.
+//
+// Trust model reminder (plan line 41): the anonymous Auth UID identifies a
+// browser profile, not a person. Dedup/rate-limit rules below are
+// best-effort by design.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ---------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function affectedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // "{prefix}_{n}" document ID convention used by keywords/likes/scanEdges.
+    // Splits on the LAST underscore so the prefix itself may contain
+    // underscores (anonymous Auth UIDs don't, but this stays defensive).
+    function idParts(id) {
+      return id.split('_');
+    }
+
+    // ---------------------------------------------------------------------
+    // sessions/{uid} — connection KPI evidence (plan data model row 1).
+    // Owner-only; not part of the public-read collection list.
+    // ---------------------------------------------------------------------
+    match /sessions/{uid} {
+      allow read: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['firstSeenAt', 'lastSeenAt']);
+
+      // Revisits bump lastSeenAt only — firstSeenAt is immutable KPI evidence.
+      allow update: if isOwner(uid) && affectedKeys().hasOnly(['lastSeenAt']);
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // cards/{cardId} — digital business card. Public read (hidden==false).
+    // hidden/aiIntro are Admin SDK-only (Route Handler); owner may only
+    // edit their own profile fields.
+    // ---------------------------------------------------------------------
+    match /cards/{cardId} {
+      // Owner can always see their own card even while hidden by moderation.
+      allow read: if resource.data.hidden == false || isOwner(resource.data.ownerUid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.hidden == false
+        && !('aiIntro' in request.resource.data);
+
+      allow update: if isOwner(resource.data.ownerUid)
+        && affectedKeys().hasOnly(['nickname', 'company', 'role', 'github', 'linkedin', 'service']);
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // cardRecovery/{cardId} — recovery code hash. Deny-all for clients;
+    // only /api/card/recover (Admin SDK) may touch this collection.
+    // ---------------------------------------------------------------------
+    match /cardRecovery/{cardId} {
+      allow read, write: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // keywords/{uid}_{n} — word cloud / networking keyword slots.
+    // No hidden field in the data model → unconditional public read.
+    // n is capped to [0, 9] by the ID convention itself (10 slots per uid).
+    // ---------------------------------------------------------------------
+    match /keywords/{keywordId} {
+      allow read: if true;
+
+      allow create: if isSignedIn()
+        && idParts(keywordId).size() == 2
+        && idParts(keywordId)[0] == request.auth.uid
+        && int(idParts(keywordId)[1]) >= 0
+        && int(idParts(keywordId)[1]) <= 9
+        && request.resource.data.uid == request.auth.uid;
+
+      // Known limitation (plan line 104): two tabs racing on the same n
+      // slot can overwrite each other's keyword. Accepted, not a bug.
+      allow update: if isOwner(resource.data.uid)
+        && idParts(keywordId)[0] == request.auth.uid
+        && affectedKeys().hasOnly(['text', 'type']);
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // questions/{qid} — Q&A. Public read (hidden==false). No edit-question
+    // feature exists in the plan, so owners may only create + read, never
+    // update (hidden/answered are Admin SDK-only).
+    // ---------------------------------------------------------------------
+    match /questions/{qid} {
+      allow read: if resource.data.hidden == false || isOwner(resource.data.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.hidden == false
+        && request.resource.data.answered == false;
+
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // likes/{qid}_{uid} — create-only dedup via document ID convention.
+    // Public read: question like counts are computed client-side from this
+    // collection (plan line 105 — "likeCount 저장 안 함").
+    // ---------------------------------------------------------------------
+    match /likes/{likeId} {
+      allow read: if true;
+
+      allow create: if isSignedIn()
+        && idParts(likeId).size() == 2
+        && idParts(likeId)[1] == request.auth.uid
+        && request.resource.data.qid == idParts(likeId)[0]
+        && request.resource.data.uid == request.auth.uid;
+
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // talks/{tid} — lightning talk applications. Public read only once
+    // approved; applicant can still see their own pending/rejected status.
+    // status/order are Admin SDK-only; no edit-talk feature exists.
+    // ---------------------------------------------------------------------
+    match /talks/{tid} {
+      allow read: if resource.data.status == 'approved' || isOwner(resource.data.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending';
+
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // missions/{mid} — Builder Passport mission definitions. Admin-seeded,
+    // publicly readable so participants can see the mission list.
+    // ---------------------------------------------------------------------
+    match /missions/{mid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // scanEdges/{scannerUid}_{targetUid} — unidirectional Passport scan.
+    // Progress query is `scanner==me OR target==me` (plan line 109).
+    // ---------------------------------------------------------------------
+    match /scanEdges/{edgeId} {
+      allow read: if isSignedIn()
+        && (resource.data.scanner == request.auth.uid || resource.data.target == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && idParts(edgeId).size() == 2
+        && idParts(edgeId)[0] == request.auth.uid
+        && request.resource.data.scanner == request.auth.uid
+        && request.resource.data.target == idParts(edgeId)[1]
+        && request.resource.data.scanner != request.resource.data.target;
+
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // raffleEntries/{uid} — contact info collected once at raffle entry.
+    // Self-only, create-only (no edits after submission).
+    // ---------------------------------------------------------------------
+    match /raffleEntries/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // bingo/{uid} — I/O Bingo grid + checks. Private to the owner.
+    // ---------------------------------------------------------------------
+    match /bingo/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // matches/{uid} — Builder Match results, Gemini-generated cache.
+    // Written server-side only (/api/gemini/match, Admin SDK); owner reads.
+    // ---------------------------------------------------------------------
+    match /matches/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+    }
+
+    // ---------------------------------------------------------------------
+    // archive/{id} — post-event slides/photos/Discord links. Public read,
+    // admin (Admin SDK) write only.
+    // ---------------------------------------------------------------------
+    match /archive/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Deny everything else by default.
     match /{document=**} {
       allow read, write: if false;
     }
