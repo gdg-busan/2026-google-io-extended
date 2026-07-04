@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { JotaiProvider } from "@/shared/lib";
 import { EVENT_NAME } from "@/shared/config";
 import { SessionBootstrap } from "@/entities/session";
+import "@radix-ui/themes/styles.css";
+import "./theme.css";
 import "./globals.css";
+import { Theme } from "@radix-ui/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +37,18 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <JotaiProvider>
-          <SessionBootstrap />
-          {children}
-        </JotaiProvider>
+        <Theme
+          appearance="light"
+          accentColor="blue"
+          grayColor="slate"
+          radius="large"
+          scaling="100%"
+        >
+          <JotaiProvider>
+            <SessionBootstrap />
+            {children}
+          </JotaiProvider>
+        </Theme>
       </body>
     </html>
   );

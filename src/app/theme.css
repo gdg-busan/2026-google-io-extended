@@ -1,0 +1,13 @@
+/* GDG / Google I/O 브랜드 토큰. Radix `blue` accent 위에 얹는 카테고리 색. */
+:root {
+  --brand-blue: #4285f4;
+  --brand-red: #ea4335;
+  --brand-yellow: #f9ab00; /* 흰 배경 텍스트 대비용 진한 톤 */
+  --brand-green: #34a853;
+
+  /* 아이콘 칩 배경 틴트 (12% 불투명) */
+  --brand-blue-tint: color-mix(in oklch, var(--brand-blue) 12%, transparent);
+  --brand-red-tint: color-mix(in oklch, var(--brand-red) 12%, transparent);
+  --brand-yellow-tint: color-mix(in oklch, var(--brand-yellow) 16%, transparent);
+  --brand-green-tint: color-mix(in oklch, var(--brand-green) 12%, transparent);
+}
