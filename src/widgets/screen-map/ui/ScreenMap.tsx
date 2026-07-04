@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { Heading, Text } from "@radix-ui/themes";
 import { cardsListAtom } from "@/entities/card";
 import { useDebouncedValue } from "@/shared/lib";
 import styles from "./ScreenMap.module.css";
@@ -52,8 +53,12 @@ export function ScreenMap() {
   if (floaters.length === 0) {
     return (
       <div className={styles.empty}>
-        <p>아직 등록된 Builder가 없어요</p>
-        <span>명함을 등록하면 이 화면에 떠올라요</span>
+        <Heading as="h2" size="9" align="center">
+          아직 등록된 Builder가 없어요
+        </Heading>
+        <Text size="6" color="gray" align="center">
+          명함을 등록하면 이 화면에 떠올라요
+        </Text>
       </div>
     );
   }

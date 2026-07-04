@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { Heading, Text } from "@radix-ui/themes";
 import { wordcloudKeywordsAtom } from "@/entities/keyword";
 import { useDebouncedValue } from "@/shared/lib";
 import styles from "./ScreenWordCloud.module.css";
@@ -55,8 +56,12 @@ export function ScreenWordCloud() {
   if (words.length === 0) {
     return (
       <div className={styles.empty}>
-        <p>키워드를 기다리는 중…</p>
-        <span>QR을 찍고 첫 키워드를 남겨보세요</span>
+        <Heading as="h2" size="9" align="center">
+          키워드를 기다리는 중…
+        </Heading>
+        <Text size="6" color="gray" align="center">
+          QR을 찍고 첫 키워드를 남겨보세요
+        </Text>
       </div>
     );
   }

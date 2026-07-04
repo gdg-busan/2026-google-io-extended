@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { Heading, Text } from "@radix-ui/themes";
 import { cardsListAtom } from "@/entities/card";
 import { networkingKeywordsAtom } from "@/entities/keyword";
 import { useDebouncedValue } from "@/shared/lib";
@@ -54,8 +55,12 @@ export function ScreenFeed() {
   if (items.length === 0) {
     return (
       <div className={styles.empty}>
-        <p>피드가 곧 채워져요</p>
-        <span>명함 등록과 네트워킹 키워드가 여기 실시간으로 흘러요</span>
+        <Heading as="h2" size="9" align="center">
+          피드가 곧 채워져요
+        </Heading>
+        <Text size="6" color="gray" align="center">
+          명함 등록과 네트워킹 키워드가 여기 실시간으로 흘러요
+        </Text>
       </div>
     );
   }
