@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { Box, Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { parseRecoveryToken, recoverCard } from "../api/recover-card";
 
@@ -61,17 +61,16 @@ export function RecoverCardForm() {
   return (
     <form onSubmit={handleSubmit}>
       <Flex direction="column" gap="3">
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            복구 코드
-          </Text>
+        <Text as="label" size="2" weight="medium">
+          복구 코드
           <TextField.Root
+            mt="1"
             value={token}
             onChange={(event) => setToken(event.target.value)}
             placeholder="예: aBcD1234.7K3M9PQR"
             required
           />
-        </Box>
+        </Text>
         {error ? (
           <Text color="red" size="1" role="alert">
             {error}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { Box, Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import type { CardInput } from "@/entities/card";
 import { registerCard } from "../api/register-card";
@@ -82,62 +82,56 @@ export function RegisterCardForm() {
   return (
     <form onSubmit={handleSubmit}>
       <Flex direction="column" gap="3">
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            닉네임 (필수)
-          </Text>
+        <Text as="label" size="2" weight="medium">
+          닉네임 (필수)
           <TextField.Root
+            mt="1"
             value={form.nickname}
             onChange={(event) => handleChange("nickname", event.target.value)}
             required
             maxLength={40}
           />
-        </Box>
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            회사
-          </Text>
+        </Text>
+        <Text as="label" size="2" weight="medium">
+          회사
           <TextField.Root
+            mt="1"
             value={form.company}
             onChange={(event) => handleChange("company", event.target.value)}
           />
-        </Box>
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            하는 일
-          </Text>
+        </Text>
+        <Text as="label" size="2" weight="medium">
+          하는 일
           <TextField.Root
+            mt="1"
             value={form.role}
             onChange={(event) => handleChange("role", event.target.value)}
           />
-        </Box>
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            GitHub
-          </Text>
+        </Text>
+        <Text as="label" size="2" weight="medium">
+          GitHub
           <TextField.Root
+            mt="1"
             value={form.github}
             onChange={(event) => handleChange("github", event.target.value)}
           />
-        </Box>
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            LinkedIn
-          </Text>
+        </Text>
+        <Text as="label" size="2" weight="medium">
+          LinkedIn
           <TextField.Root
+            mt="1"
             value={form.linkedin}
             onChange={(event) => handleChange("linkedin", event.target.value)}
           />
-        </Box>
-        <Box>
-          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
-            서비스
-          </Text>
+        </Text>
+        <Text as="label" size="2" weight="medium">
+          서비스
           <TextField.Root
+            mt="1"
             value={form.service}
             onChange={(event) => handleChange("service", event.target.value)}
           />
-        </Box>
+        </Text>
         {error ? (
           <Text color="red" size="1" role="alert">
             {error}
