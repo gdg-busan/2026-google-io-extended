@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Button, Flex, Text, TextArea } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { askQuestion, MAX_QUESTION_LENGTH } from "../model/ask-question";
 
@@ -32,18 +33,26 @@ export function AskQuestionForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <textarea
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-        maxLength={MAX_QUESTION_LENGTH}
-        placeholder="궁금한 점을 남겨주세요"
-        disabled={!isReady || isSubmitting}
-        required
-      />
-      <button type="submit" disabled={!uid || isSubmitting || !text.trim()}>
-        {isSubmitting ? "등록 중..." : "질문 등록"}
-      </button>
-      {error && <p role="alert">{error}</p>}
+      <Flex direction="column" gap="2">
+        <TextArea
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          maxLength={MAX_QUESTION_LENGTH}
+          placeholder="궁금한 점을 남겨주세요"
+          disabled={!isReady || isSubmitting}
+          required
+        />
+        <Flex justify="end">
+          <Button type="submit" disabled={!uid || isSubmitting || !text.trim()}>
+            {isSubmitting ? "등록 중..." : "질문 등록"}
+          </Button>
+        </Flex>
+        {error && (
+          <Text role="alert" color="red" size="1">
+            {error}
+          </Text>
+        )}
+      </Flex>
     </form>
   );
 }

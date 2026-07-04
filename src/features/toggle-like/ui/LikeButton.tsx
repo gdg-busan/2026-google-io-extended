@@ -2,6 +2,8 @@
 
 import { useAtomValue } from "jotai";
 import { useState } from "react";
+import { Flex, IconButton, Text } from "@radix-ui/themes";
+import { HeartFilledIcon, HeartIcon } from "@radix-ui/react-icons";
 import { likeCountsAtom } from "@/entities/like";
 import { uidAtom } from "@/entities/session";
 import { likeQuestion } from "../model/like-question";
@@ -31,13 +33,21 @@ export function LikeButton({ questionId }: LikeButtonProps) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={!uid || isLiked || isSubmitting}
-      aria-pressed={isLiked}
-    >
-      {isLiked ? "♥" : "♡"} {count}
-    </button>
+    <Flex align="center" gap="1">
+      <IconButton
+        type="button"
+        variant="ghost"
+        color={isLiked ? "red" : "gray"}
+        onClick={handleClick}
+        disabled={!uid || isLiked || isSubmitting}
+        aria-pressed={isLiked}
+        aria-label={isLiked ? "좋아요 취소 불가" : "좋아요"}
+      >
+        {isLiked ? <HeartFilledIcon /> : <HeartIcon />}
+      </IconButton>
+      <Text size="2" color="gray">
+        {count}
+      </Text>
+    </Flex>
   );
 }

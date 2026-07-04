@@ -1,6 +1,8 @@
 "use client";
 
 import { useAtomValue } from "jotai";
+import { Card, Flex, Text } from "@radix-ui/themes";
+import { PageHeader } from "@/shared/ui-kit";
 import { likeCountsAtom } from "@/entities/like";
 import { questionsAtom } from "@/entities/question";
 import { AskQuestionForm } from "@/features/ask-question";
@@ -19,16 +21,20 @@ export function QnaView() {
 
   return (
     <main>
-      <h1>Q&A</h1>
+      <PageHeader title="Q&A" subtitle="궁금한 점을 질문하고 좋아요를 눌러보세요" />
       <AskQuestionForm />
-      <ul>
+      <Flex direction="column" gap="3" mt="4">
         {sortedQuestions.map((question) => (
-          <li key={question.id}>
-            <p>{question.text}</p>
-            <LikeButton questionId={question.id} />
-          </li>
+          <Card key={question.id} size="2" variant="surface">
+            <Flex align="center" justify="between" gap="3">
+              <Text as="p" size="2">
+                {question.text}
+              </Text>
+              <LikeButton questionId={question.id} />
+            </Flex>
+          </Card>
         ))}
-      </ul>
+      </Flex>
     </main>
   );
 }
