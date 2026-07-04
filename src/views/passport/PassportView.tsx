@@ -1,5 +1,7 @@
 "use client";
 
+import { Card, Flex, Text } from "@radix-ui/themes";
+import { PageHeader } from "@/shared/ui-kit";
 import { MISSIONS } from "@/entities/mission";
 import { PassportQr, PassportScanner, RaffleEntry } from "@/features/scan-passport";
 
@@ -7,20 +9,26 @@ import { PassportQr, PassportScanner, RaffleEntry } from "@/features/scan-passpo
 export function PassportView() {
   return (
     <main>
-      <h1>Builder Passport</h1>
+      <PageHeader
+        title="Builder Passport"
+        subtitle="네트워킹 미션을 완료하고 경품에 응모하세요"
+      />
 
-      <section>
-        <h2>네트워킹 미션</h2>
-        <ul>
-          {MISSIONS.map((mission) => (
-            <li key={mission.id}>{mission.label}</li>
-          ))}
-        </ul>
-      </section>
+      <Flex direction="column" gap="2" mb="5">
+        {MISSIONS.map((mission) => (
+          <Card key={mission.id} size="2" variant="surface">
+            <Text as="p" size="2">
+              {mission.label}
+            </Text>
+          </Card>
+        ))}
+      </Flex>
 
-      <PassportQr />
-      <PassportScanner />
-      <RaffleEntry />
+      <Flex direction="column" gap="4">
+        <PassportQr />
+        <PassportScanner />
+        <RaffleEntry />
+      </Flex>
     </main>
   );
 }

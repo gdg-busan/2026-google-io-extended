@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Button, Callout, Card, Dialog, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { recordScan } from "../model/record-scan";
 import { PASSPORT_QR_PREFIX } from "./PassportQr";
@@ -40,6 +41,7 @@ function extractUid(payload: string): string {
 export function PassportScanner() {
   const { uid } = useSession();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [open, setOpen] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -117,41 +119,86 @@ export function PassportScanner() {
   }, [scanning, supportsCamera]);
 
   return (
-    <div>
-      <h2>상대 QR 스캔</h2>
-      {supportsCamera && (
-        <>
-          <button type="button" onClick={() => setScanning((value) => !value)}>
-            {scanning ? "스캔 중지" : "카메라로 스캔"}
-          </button>
-          {scanning && (
-            <video ref={videoRef} playsInline muted style={{ width: "100%", maxWidth: 320 }} />
-          )}
-        </>
-      )}
-
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          void connect(manualCode);
-          setManualCode("");
+    <Card size="2" variant="surface">
+      <Dialog.Root
+        open={open}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen);
+          // Dialog.Content unmounts on close; stop any in-flight camera scan
+          // so the existing cleanup effect (stream.getTracks().stop()) runs.
+          if (!nextOpen) setScanning(false);
         }}
       >
-        <label>
-          코드 직접 입력
-          <input
-            value={manualCode}
-            onChange={(event) => setManualCode(event.target.value)}
-            placeholder="상대방 코드"
-          />
-        </label>
-        <button type="submit" disabled={!manualCode.trim()}>
-          연결
-        </button>
-      </form>
+        <Flex align="center" justify="between" gap="3">
+          <Heading as="h2" size="3">
+            상대 QR 스캔
+          </Heading>
+          <Dialog.Trigger>
+            <Button variant="solid" size="2">
+              스캔하기
+            </Button>
+          </Dialog.Trigger>
+        </Flex>
 
-      {message && <p role="status">{message}</p>}
-      {error && <p role="alert">{error}</p>}
-    </div>
+        <Dialog.Content maxWidth="420px">
+          <Dialog.Title>상대 QR 스캔</Dialog.Title>
+          <Flex direction="column" gap="3">
+            {supportsCamera && (
+              <Flex direction="column" gap="2">
+                <Button
+                  type="button"
+                  variant="soft"
+                  onClick={() => setScanning((value) => !value)}
+                >
+                  {scanning ? "스캔 중지" : "카메라로 스캔"}
+                </Button>
+                {scanning && (
+                  <video
+                    ref={videoRef}
+                    playsInline
+                    muted
+                    style={{ width: "100%", maxWidth: 320, borderRadius: "var(--radius-3)" }}
+                  />
+                )}
+              </Flex>
+            )}
+
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void connect(manualCode);
+                setManualCode("");
+              }}
+            >
+              <Flex direction="column" gap="2">
+                <Text as="label" size="2">
+                  코드 직접 입력
+                  <TextField.Root
+                    value={manualCode}
+                    onChange={(event) => setManualCode(event.target.value)}
+                    placeholder="상대방 코드"
+                    mt="1"
+                  />
+                </Text>
+                <Button type="submit" disabled={!manualCode.trim()}>
+                  연결
+                </Button>
+              </Flex>
+            </form>
+
+            {message && (
+              <Callout.Root color="green" role="status">
+                <Callout.Text>{message}</Callout.Text>
+              </Callout.Root>
+            )}
+            {error && (
+              <Callout.Root color="red" role="alert">
+                <Callout.Text>{error}</Callout.Text>
+              </Callout.Root>
+            )}
+          </Flex>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Card>
   );
 }

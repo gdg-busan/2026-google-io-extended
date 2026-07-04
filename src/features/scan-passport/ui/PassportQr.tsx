@@ -2,6 +2,7 @@
 
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
+import { Card, Flex, Heading, Skeleton, Text } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 
 /** Prefix marking a Builder Passport QR payload (disambiguates from other QRs). */
@@ -31,19 +32,31 @@ export function PassportQr() {
   }, [uid]);
 
   if (!isReady) {
-    return <p>불러오는 중…</p>;
+    return (
+      <Skeleton>
+        <Card size="2" style={{ height: 280 }} />
+      </Skeleton>
+    );
   }
 
   return (
-    <div>
-      <h2>내 QR</h2>
-      <p>상대방이 이 QR을 스캔하면 서로 연결돼요.</p>
-      {dataUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- data: URL, no optimization needed
-        <img src={dataUrl} alt="내 Builder Passport QR" width={240} height={240} />
-      ) : (
-        <p>QR 생성 중…</p>
-      )}
-    </div>
+    <Card size="2" variant="surface">
+      <Flex direction="column" align="center" gap="2">
+        <Heading as="h2" size="3">
+          내 QR
+        </Heading>
+        <Text size="2" color="gray" align="center">
+          상대방이 이 QR을 스캔하면 서로 연결돼요.
+        </Text>
+        {dataUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- data: URL, no optimization needed
+          <img src={dataUrl} alt="내 Builder Passport QR" width={240} height={240} />
+        ) : (
+          <Text size="2" color="gray">
+            QR 생성 중…
+          </Text>
+        )}
+      </Flex>
+    </Card>
   );
 }

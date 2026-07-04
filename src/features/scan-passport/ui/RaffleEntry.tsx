@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { useState } from "react";
+import { Badge, Button, Callout, Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { connectionCountAtom } from "@/entities/scan-edge";
 import { RAFFLE_CONNECTION_THRESHOLD } from "@/entities/mission";
@@ -25,55 +26,76 @@ export function RaffleEntry() {
 
   if (entry) {
     return (
-      <section>
-        <h2>경품 응모 완료 🎟️</h2>
-        <p>응모가 접수됐어요. 추첨 결과를 기다려 주세요!</p>
-      </section>
+      <Callout.Root color="green">
+        <Callout.Text>
+          <Text as="p" weight="bold">
+            경품 응모 완료 🎟️
+          </Text>
+          응모가 접수됐어요. 추첨 결과를 기다려 주세요!
+        </Callout.Text>
+      </Callout.Root>
     );
   }
 
   return (
-    <section>
-      <h2>경품 응모</h2>
-      <p>
-        {connections} / {RAFFLE_CONNECTION_THRESHOLD}명 연결됨
-        {!unlocked && ` — ${RAFFLE_CONNECTION_THRESHOLD}명과 연결하면 응모할 수 있어요.`}
-      </p>
-      {unlocked && (
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault();
-            if (!uid) return;
-            setIsSubmitting(true);
-            setError(null);
-            try {
-              await enterRaffle(uid, contact);
-            } catch (submitError) {
-              setError(
-                submitError instanceof Error
-                  ? submitError.message
-                  : "응모에 실패했어요.",
-              );
-            } finally {
-              setIsSubmitting(false);
-            }
-          }}
-        >
-          <label>
-            연락처 (이메일 또는 전화번호)
-            <input
-              value={contact}
-              onChange={(event) => setContact(event.target.value)}
-              placeholder="추첨 안내를 받을 연락처"
-              required
-            />
-          </label>
-          <button type="submit" disabled={isSubmitting || !contact.trim()}>
-            {isSubmitting ? "응모 중…" : "응모하기"}
-          </button>
-          {error && <p role="alert">{error}</p>}
-        </form>
-      )}
-    </section>
+    <Card size="2" variant="surface">
+      <Flex direction="column" gap="3">
+        <Flex align="center" justify="between" gap="3">
+          <Heading as="h2" size="3">
+            경품 응모
+          </Heading>
+          <Badge color={unlocked ? "green" : "gray"} variant="soft" size="2">
+            {connections} / {RAFFLE_CONNECTION_THRESHOLD}명 연결됨
+          </Badge>
+        </Flex>
+        {!unlocked && (
+          <Text size="2" color="gray">
+            {RAFFLE_CONNECTION_THRESHOLD}명과 연결하면 응모할 수 있어요.
+          </Text>
+        )}
+        {unlocked && (
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              if (!uid) return;
+              setIsSubmitting(true);
+              setError(null);
+              try {
+                await enterRaffle(uid, contact);
+              } catch (submitError) {
+                setError(
+                  submitError instanceof Error
+                    ? submitError.message
+                    : "응모에 실패했어요.",
+                );
+              } finally {
+                setIsSubmitting(false);
+              }
+            }}
+          >
+            <Flex direction="column" gap="2">
+              <Text as="label" size="2">
+                연락처 (이메일 또는 전화번호)
+                <TextField.Root
+                  value={contact}
+                  onChange={(event) => setContact(event.target.value)}
+                  placeholder="추첨 안내를 받을 연락처"
+                  required
+                  mt="1"
+                />
+              </Text>
+              <Button type="submit" disabled={isSubmitting || !contact.trim()}>
+                {isSubmitting ? "응모 중…" : "응모하기"}
+              </Button>
+              {error && (
+                <Callout.Root color="red" role="alert">
+                  <Callout.Text>{error}</Callout.Text>
+                </Callout.Root>
+              )}
+            </Flex>
+          </form>
+        )}
+      </Flex>
+    </Card>
   );
 }
