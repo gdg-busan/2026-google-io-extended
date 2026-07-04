@@ -1,10 +1,11 @@
 import { RecoverCardForm } from "@/features/recover-card";
+import { PageHeader } from "@/shared/ui-kit";
 
 export default function RecoverCardPage() {
   return (
-    <main>
-      <h1>명함 복구</h1>
+    <>
+      <PageHeader title="명함 복구" />
       <RecoverCardForm />
-    </main>
+    </>
   );
 }

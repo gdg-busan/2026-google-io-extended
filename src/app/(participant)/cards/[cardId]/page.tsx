@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useAtomValue } from "jotai";
+import { Text } from "@radix-ui/themes";
 import { cardByIdAtomFamily, CardProfile } from "@/entities/card";
 
 export default function CardDetailPage() {
@@ -9,12 +10,8 @@ export default function CardDetailPage() {
   const card = useAtomValue(cardByIdAtomFamily(params.cardId));
 
   if (!card) {
-    return <p>명함을 찾을 수 없습니다.</p>;
+    return <Text color="gray">명함을 찾을 수 없습니다.</Text>;
   }
 
-  return (
-    <main>
-      <CardProfile card={card} />
-    </main>
-  );
+  return <CardProfile card={card} />;
 }

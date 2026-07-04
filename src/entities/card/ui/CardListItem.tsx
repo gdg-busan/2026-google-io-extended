@@ -1,20 +1,26 @@
 import Link from "next/link";
-import type { Card } from "../model/types";
+import { Card, Flex, Text } from "@radix-ui/themes";
+import type { Card as CardType } from "../model/types";
 
 interface CardListItemProps {
-  card: Card;
+  card: CardType;
 }
 
 export function CardListItem({ card }: CardListItemProps) {
   return (
-    <Link href={`/cards/${card.id}`}>
-      <strong>{card.nickname}</strong>
-      {card.role && card.company ? (
-        <span>
-          {" "}
-          — {card.role} @ {card.company}
-        </span>
-      ) : null}
-    </Link>
+    <Card asChild size="2" variant="surface">
+      <Link href={`/cards/${card.id}`}>
+        <Flex direction="column" gap="1">
+          <Text as="div" weight="bold" size="3">
+            {card.nickname}
+          </Text>
+          {card.role && card.company ? (
+            <Text as="div" size="1" color="gray">
+              {card.role} @ {card.company}
+            </Text>
+          ) : null}
+        </Flex>
+      </Link>
+    </Card>
   );
 }

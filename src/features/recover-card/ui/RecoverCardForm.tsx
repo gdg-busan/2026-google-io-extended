@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { Box, Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { parseRecoveryToken, recoverCard } from "../api/recover-card";
 
@@ -38,38 +39,48 @@ export function RecoverCardForm() {
   }
 
   if (!isReady) {
-    return <p>불러오는 중...</p>;
+    return <Text color="gray">불러오는 중...</Text>;
   }
 
   if (succeededCardId) {
     return (
-      <section>
-        <h2>명함을 복구했습니다</h2>
-        <button
+      <Flex direction="column" gap="3">
+        <Text as="p" weight="bold" size="4">
+          명함을 복구했습니다
+        </Text>
+        <Button
           type="button"
           onClick={() => router.push(`/cards/${succeededCardId}`)}
         >
           내 명함 보기
-        </button>
-      </section>
+        </Button>
+      </Flex>
     );
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        복구 코드
-        <input
-          value={token}
-          onChange={(event) => setToken(event.target.value)}
-          placeholder="예: aBcD1234.7K3M9PQR"
-          required
-        />
-      </label>
-      {error ? <p role="alert">{error}</p> : null}
-      <button type="submit" disabled={isSubmitting || !token.trim()}>
-        {isSubmitting ? "복구 중..." : "명함 복구"}
-      </button>
+      <Flex direction="column" gap="3">
+        <Box>
+          <Text as="label" size="2" weight="medium" mb="1" style={{ display: "block" }}>
+            복구 코드
+          </Text>
+          <TextField.Root
+            value={token}
+            onChange={(event) => setToken(event.target.value)}
+            placeholder="예: aBcD1234.7K3M9PQR"
+            required
+          />
+        </Box>
+        {error ? (
+          <Text color="red" size="1" role="alert">
+            {error}
+          </Text>
+        ) : null}
+        <Button type="submit" disabled={isSubmitting || !token.trim()}>
+          {isSubmitting ? "복구 중..." : "명함 복구"}
+        </Button>
+      </Flex>
     </form>
   );
 }
