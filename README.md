@@ -54,12 +54,12 @@ Firestore ◀── onSnapshot (client components) ──▶ [빅스크린 /scre
 
 ## 시작하기
 
-**Node.js 18+** 와 Firebase CLI가 필요합니다. 기본적으로 로컬 Firebase 에뮬레이터 스위트만으로 완전히 동작하므로, 시작하는 데 실제 Firebase 프로젝트가 필요하지 않습니다.
+**Node.js 18+** 와 **pnpm**, Firebase CLI가 필요합니다. 기본적으로 로컬 Firebase 에뮬레이터 스위트만으로 완전히 동작하므로, 시작하는 데 실제 Firebase 프로젝트가 필요하지 않습니다.
 
 ```bash
-npm install
-npm run emulators   # Firestore + Auth 에뮬레이터 (별도 터미널)
-npm run dev
+pnpm install
+pnpm emulators   # Firestore + Auth 에뮬레이터 (별도 터미널)
+pnpm dev
 ```
 
 [http://localhost:3000](http://localhost:3000) 을 엽니다. 커스터마이즈하려면 `.env.local.example`을 `.env.local`로 복사하세요.
@@ -82,12 +82,12 @@ src/
 
 | 명령어 | 설명 |
 | --- | --- |
-| `npm run dev` | 개발 서버 실행 |
-| `npm run build` | 프로덕션 빌드 |
-| `npm run start` | 프로덕션 빌드 서빙 |
-| `npm run lint` | ESLint (FSD 경계 검사 포함) |
-| `npm run emulators` | Firestore + Auth 에뮬레이터 (`firebase.json`) |
-| `npm run test:rules` | Firestore 보안 규칙 테스트 (Vitest) |
+| `pnpm dev` | 개발 서버 실행 |
+| `pnpm build` | 프로덕션 빌드 |
+| `pnpm start` | 프로덕션 빌드 서빙 |
+| `pnpm lint` | ESLint (FSD 경계 검사 포함) |
+| `pnpm emulators` | Firestore + Auth 에뮬레이터 (`firebase.json`) |
+| `pnpm test:rules` | Firestore 보안 규칙 테스트 (Vitest) |
 
 ## 설정 파일
 
