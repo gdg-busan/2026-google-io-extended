@@ -26,7 +26,7 @@ export function RaffleEntry() {
 
   if (entry) {
     return (
-      <Callout.Root color="green">
+      <Callout.Root color="grass">
         <Callout.Text>
           <Text as="p" weight="bold">
             경품 응모 완료 🎟️
@@ -44,7 +44,7 @@ export function RaffleEntry() {
           <Heading as="h2" size="3">
             경품 응모
           </Heading>
-          <Badge color={unlocked ? "green" : "gray"} variant="soft" size="2">
+          <Badge color={unlocked ? "grass" : "gray"} variant="soft" size="2">
             {connections} / {RAFFLE_CONNECTION_THRESHOLD}명 연결됨
           </Badge>
         </Flex>

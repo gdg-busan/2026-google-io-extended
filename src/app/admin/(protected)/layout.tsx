@@ -32,8 +32,8 @@ export default async function AdminProtectedLayout({
   return (
     <Box>
       <AdminNav />
-      <Container size="3" px="4" py="5">
-        {children}
+      <Container size="3" px="4" py="5" asChild>
+        <main>{children}</main>
       </Container>
     </Box>
   );

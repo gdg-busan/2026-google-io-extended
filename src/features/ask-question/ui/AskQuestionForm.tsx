@@ -39,6 +39,7 @@ export function AskQuestionForm() {
           onChange={(event) => setText(event.target.value)}
           maxLength={MAX_QUESTION_LENGTH}
           placeholder="궁금한 점을 남겨주세요"
+          aria-label="질문 내용"
           disabled={!isReady || isSubmitting}
           required
         />

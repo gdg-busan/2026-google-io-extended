@@ -8,7 +8,7 @@ import { PassportQr, PassportScanner, RaffleEntry } from "@/features/scan-passpo
 /** Builder Passport page (task #7): missions, my QR, scanner, raffle entry. */
 export function PassportView() {
   return (
-    <main>
+    <Flex direction="column">
       <PageHeader
         title="Builder Passport"
         subtitle="네트워킹 미션을 완료하고 경품에 응모하세요"
@@ -29,6 +29,6 @@ export function PassportView() {
         <PassportScanner />
         <RaffleEntry />
       </Flex>
-    </main>
+    </Flex>
   );
 }

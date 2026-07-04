@@ -68,6 +68,7 @@ export function ApplyTalkForm() {
           onChange={(event) => setTitle(event.target.value)}
           maxLength={MAX_TALK_TITLE_LENGTH}
           placeholder="발표 제목"
+          aria-label="발표 제목"
           disabled={!isReady || isSubmitting}
           required
         />
@@ -75,6 +76,7 @@ export function ApplyTalkForm() {
           value={link}
           onChange={(event) => setLink(event.target.value)}
           placeholder="참고 링크 (선택)"
+          aria-label="참고 링크"
           disabled={!isReady || isSubmitting}
         />
         <Flex justify="end">

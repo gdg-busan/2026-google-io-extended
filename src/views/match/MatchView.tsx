@@ -18,7 +18,7 @@ export function MatchView() {
   );
 
   return (
-    <main>
+    <Flex direction="column">
       <PageHeader
         title="Builder Match"
         subtitle="AI 한 줄 소개를 만들고 나와 비슷한 Builder를 찾아보세요"
@@ -46,6 +46,6 @@ export function MatchView() {
         </Heading>
         <MatchPanel />
       </Flex>
-    </main>
+    </Flex>
   );
 }

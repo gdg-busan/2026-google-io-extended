@@ -78,7 +78,7 @@ export function AdminModerationView({ cards, questions, keywords }: Props) {
                   <Table.Row key={row.id}>
                     <Table.RowHeaderCell>{row.label}</Table.RowHeaderCell>
                     <Table.Cell>
-                      <Badge color={row.hidden ? "gray" : "green"} variant="soft">
+                      <Badge color={row.hidden ? "gray" : "grass"} variant="soft">
                         {row.hidden ? "숨김" : "공개"}
                       </Badge>
                     </Table.Cell>

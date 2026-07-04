@@ -10,7 +10,7 @@ export function TalksView() {
   const talks = useAtomValue(approvedTalksAtom);
 
   return (
-    <main>
+    <Flex direction="column">
       <PageHeader title="라이트닝 토크" subtitle="발표를 신청하고 승인된 목록을 확인하세요" />
       <ApplyTalkForm />
       <Flex direction="column" gap="3" mt="4">
@@ -30,6 +30,6 @@ export function TalksView() {
           </Card>
         ))}
       </Flex>
-    </main>
+    </Flex>
   );
 }

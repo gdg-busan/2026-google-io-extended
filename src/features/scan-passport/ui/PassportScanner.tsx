@@ -142,6 +142,9 @@ export function PassportScanner() {
 
         <Dialog.Content maxWidth="420px">
           <Dialog.Title>상대 QR 스캔</Dialog.Title>
+          <Dialog.Description size="2" color="gray" mb="3">
+            QR 코드를 스캔하거나 코드를 직접 입력하세요.
+          </Dialog.Description>
           <Flex direction="column" gap="3">
             {supportsCamera && (
               <Flex direction="column" gap="2">
@@ -187,7 +190,7 @@ export function PassportScanner() {
             </form>
 
             {message && (
-              <Callout.Root color="green" role="status">
+              <Callout.Root color="grass" role="status">
                 <Callout.Text>{message}</Callout.Text>
               </Callout.Root>
             )}

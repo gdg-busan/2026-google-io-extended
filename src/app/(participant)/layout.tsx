@@ -6,8 +6,8 @@ export default function ParticipantLayout({ children }: { children: ReactNode })
   return (
     <Box>
       <AppBar />
-      <Container size="1" px="4" py="5">
-        {children}
+      <Container size="1" px="4" py="5" asChild>
+        <main>{children}</main>
       </Container>
     </Box>
   );

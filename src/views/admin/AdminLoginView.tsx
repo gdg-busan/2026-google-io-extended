@@ -34,40 +34,42 @@ export function AdminLoginView() {
   };
 
   return (
-    <Container size="1" px="4" py="8">
-      <Flex direction="column" align="center" justify="center" style={{ minHeight: "70vh" }}>
-        <Card size="3" style={{ width: "100%", maxWidth: 360 }}>
-          <Flex direction="column" gap="4" asChild>
-            <form onSubmit={handleSubmit}>
-              <Heading as="h1" size="5" align="center">
-                운영 콘솔 로그인
-              </Heading>
-              <Flex direction="column" gap="2">
-                <Text as="label" htmlFor="admin-passcode" size="2" weight="medium">
-                  Passcode
-                </Text>
-                <TextField.Root
-                  id="admin-passcode"
-                  type="password"
-                  value={passcode}
-                  onChange={(event) => setPasscode(event.target.value)}
-                  disabled={isSubmitting}
-                  required
-                  size="3"
-                />
-              </Flex>
-              {error && (
-                <Callout.Root color="red" size="1" role="alert">
-                  <Callout.Text>{error}</Callout.Text>
-                </Callout.Root>
-              )}
-              <Button type="submit" disabled={isSubmitting || !passcode} size="3">
-                {isSubmitting ? "확인 중..." : "로그인"}
-              </Button>
-            </form>
-          </Flex>
-        </Card>
-      </Flex>
+    <Container size="1" px="4" py="8" asChild>
+      <main>
+        <Flex direction="column" align="center" justify="center" style={{ minHeight: "70vh" }}>
+          <Card size="3" style={{ width: "100%", maxWidth: 360 }}>
+            <Flex direction="column" gap="4" asChild>
+              <form onSubmit={handleSubmit}>
+                <Heading as="h1" size="5" align="center">
+                  운영 콘솔 로그인
+                </Heading>
+                <Flex direction="column" gap="2">
+                  <Text as="label" htmlFor="admin-passcode" size="2" weight="medium">
+                    Passcode
+                  </Text>
+                  <TextField.Root
+                    id="admin-passcode"
+                    type="password"
+                    value={passcode}
+                    onChange={(event) => setPasscode(event.target.value)}
+                    disabled={isSubmitting}
+                    required
+                    size="3"
+                  />
+                </Flex>
+                {error && (
+                  <Callout.Root color="red" size="1" role="alert">
+                    <Callout.Text>{error}</Callout.Text>
+                  </Callout.Root>
+                )}
+                <Button type="submit" disabled={isSubmitting || !passcode} size="3">
+                  {isSubmitting ? "확인 중..." : "로그인"}
+                </Button>
+              </form>
+            </Flex>
+          </Card>
+        </Flex>
+      </main>
     </Container>
   );
 }

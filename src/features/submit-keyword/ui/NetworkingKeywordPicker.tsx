@@ -64,6 +64,7 @@ export function NetworkingKeywordPicker() {
             onChange={(event) => setCustomText(event.target.value)}
             maxLength={MAX_KEYWORD_LENGTH}
             placeholder="직접 입력"
+            aria-label="네트워킹 키워드 직접 입력"
             disabled={!isReady || pendingKeyword !== null}
             style={{ flexGrow: 1 }}
           />

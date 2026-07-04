@@ -20,7 +20,7 @@ export function QnaView() {
   );
 
   return (
-    <main>
+    <Flex direction="column">
       <PageHeader title="Q&A" subtitle="궁금한 점을 질문하고 좋아요를 눌러보세요" />
       <AskQuestionForm />
       <Flex direction="column" gap="3" mt="4">
@@ -35,6 +35,6 @@ export function QnaView() {
           </Card>
         ))}
       </Flex>
-    </main>
+    </Flex>
   );
 }

@@ -19,7 +19,7 @@ export function ArchiveView() {
   const items = useAtomValue(archiveItemsAtom);
 
   return (
-    <main>
+    <Flex direction="column">
       <PageHeader title="행사 아카이브" />
 
       {items.length === 0 && (
@@ -67,6 +67,6 @@ export function ArchiveView() {
           </Flex>
         );
       })}
-    </main>
+    </Flex>
   );
 }

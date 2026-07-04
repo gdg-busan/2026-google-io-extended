@@ -46,6 +46,7 @@ export function WordCloudSubmitForm() {
             onChange={(event) => setText(event.target.value)}
             maxLength={MAX_KEYWORD_LENGTH}
             placeholder="워드클라우드에 올릴 키워드"
+            aria-label="워드클라우드 키워드"
             disabled={!isReady || isSubmitting}
             required
             style={{ flexGrow: 1 }}
