@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Badge, Box, Button, Flex, Heading, Table } from "@radix-ui/themes";
+import { PageHeader } from "@/shared/ui-kit";
 
 export interface ModerationRow {
   id: string;
@@ -55,28 +57,49 @@ export function AdminModerationView({ cards, questions, keywords }: Props) {
   };
 
   return (
-    <main>
-      <h1>모더레이션</h1>
+    <Flex direction="column">
+      <PageHeader title="모더레이션" />
       {SECTIONS.map(({ key, labelKo }) => (
-        <section key={key}>
-          <h2>{labelKo}</h2>
-          <ul>
-            {rowsByCollection[key].map((row) => (
-              <li key={row.id}>
-                <span>{row.label}</span>
-                <span>{row.hidden ? "숨김" : "공개"}</span>
-                <button
-                  type="button"
-                  disabled={pendingId === row.id}
-                  onClick={() => handleToggle(key, row.id, !row.hidden)}
-                >
-                  {row.hidden ? "공개로 전환" : "숨기기"}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Box key={key} mb="6">
+          <Heading as="h2" size="3" mb="3" color="gray" highContrast>
+            {labelKo}
+          </Heading>
+          <Box overflowX="auto">
+            <Table.Root variant="surface">
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeaderCell>내용</Table.ColumnHeaderCell>
+                  <Table.ColumnHeaderCell>상태</Table.ColumnHeaderCell>
+                  <Table.ColumnHeaderCell>동작</Table.ColumnHeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {rowsByCollection[key].map((row) => (
+                  <Table.Row key={row.id}>
+                    <Table.RowHeaderCell>{row.label}</Table.RowHeaderCell>
+                    <Table.Cell>
+                      <Badge color={row.hidden ? "gray" : "green"} variant="soft">
+                        {row.hidden ? "숨김" : "공개"}
+                      </Badge>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Button
+                        type="button"
+                        size="1"
+                        variant="soft"
+                        disabled={pendingId === row.id}
+                        onClick={() => handleToggle(key, row.id, !row.hidden)}
+                      >
+                        {row.hidden ? "공개로 전환" : "숨기기"}
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Box>
+        </Box>
       ))}
-    </main>
+    </Flex>
   );
 }
