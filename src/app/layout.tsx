@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { JotaiProvider } from "@/shared/lib";
 import { EVENT_NAME } from "@/shared/config";
+import { SessionBootstrap } from "@/entities/session";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +28,10 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <JotaiProvider>{children}</JotaiProvider>
+        <JotaiProvider>
+          <SessionBootstrap />
+          {children}
+        </JotaiProvider>
       </body>
     </html>
   );
