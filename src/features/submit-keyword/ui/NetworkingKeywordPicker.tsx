@@ -2,6 +2,7 @@
 
 import { useAtomValue } from "jotai";
 import { useState, type FormEvent } from "react";
+import { Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { useSession } from "@/entities/session";
 import { isKeywordCapReachedAtom, usedKeywordSlotIndicesAtom } from "../model/atoms";
 import { MAX_KEYWORD_LENGTH, submitKeyword } from "../model/submit-keyword";
@@ -17,7 +18,7 @@ export function NetworkingKeywordPicker() {
   const [error, setError] = useState<string | null>(null);
 
   if (isCapReached) {
-    return <p>키워드를 최대 개수만큼 제출했어요.</p>;
+    return <Text color="gray">키워드를 최대 개수만큼 제출했어요.</Text>;
   }
 
   const submit = async (text: string) => {
@@ -42,32 +43,43 @@ export function NetworkingKeywordPicker() {
   };
 
   return (
-    <div>
-      <div role="group" aria-label="추천 키워드">
+    <Flex direction="column" gap="3">
+      <Flex wrap="wrap" gap="2" role="group" aria-label="추천 키워드">
         {SUGGESTED_KEYWORDS.map((keyword) => (
-          <button
+          <Button
             key={keyword}
             type="button"
+            variant="surface"
             onClick={() => submit(keyword)}
             disabled={!isReady || pendingKeyword !== null}
           >
             {keyword}
-          </button>
+          </Button>
         ))}
-      </div>
+      </Flex>
       <form onSubmit={handleCustomSubmit}>
-        <input
-          value={customText}
-          onChange={(event) => setCustomText(event.target.value)}
-          maxLength={MAX_KEYWORD_LENGTH}
-          placeholder="직접 입력"
-          disabled={!isReady || pendingKeyword !== null}
-        />
-        <button type="submit" disabled={!uid || pendingKeyword !== null || !customText.trim()}>
-          추가
-        </button>
+        <Flex gap="2">
+          <TextField.Root
+            value={customText}
+            onChange={(event) => setCustomText(event.target.value)}
+            maxLength={MAX_KEYWORD_LENGTH}
+            placeholder="직접 입력"
+            disabled={!isReady || pendingKeyword !== null}
+            style={{ flexGrow: 1 }}
+          />
+          <Button
+            type="submit"
+            disabled={!uid || pendingKeyword !== null || !customText.trim()}
+          >
+            추가
+          </Button>
+        </Flex>
       </form>
-      {error && <p role="alert">{error}</p>}
-    </div>
+      {error ? (
+        <Text color="red" size="1" role="alert">
+          {error}
+        </Text>
+      ) : null}
+    </Flex>
   );
 }
