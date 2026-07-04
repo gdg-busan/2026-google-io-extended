@@ -18,6 +18,7 @@ export function AdminNav() {
       <Link href="/admin">대시보드</Link>
       <Link href="/admin/talks">라이트닝 토크</Link>
       <Link href="/admin/moderation">모더레이션</Link>
+      <Link href="/admin/archive">아카이브</Link>
       <button type="button" onClick={handleLogout}>
         로그아웃
       </button>

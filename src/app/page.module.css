@@ -1,10 +1,89 @@
 .main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  gap: 16px;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+  gap: clamp(1.5rem, 5vw, 2.5rem);
   font-family: var(--font-geist-sans);
+}
+
+.header {
   text-align: center;
+}
+
+.kicker {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.title {
+  margin-top: 0.4rem;
+  font-size: clamp(1.4rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin-top: 0.6rem;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  opacity: 0.65;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.6rem, 2.5vw, 1rem);
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: clamp(1rem, 4vw, 1.4rem);
+  border: 1px solid color-mix(in oklch, currentColor 14%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklch, currentColor 3%, transparent);
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklch, currentColor 40%, transparent);
+}
+
+.emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.label {
+  font-size: clamp(1rem, 3.5vw, 1.15rem);
+  font-weight: 700;
+}
+
+.desc {
+  font-size: clamp(0.75rem, 2.6vw, 0.85rem);
+  opacity: 0.6;
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }

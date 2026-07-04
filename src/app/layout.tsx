@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { JotaiProvider } from "@/shared/lib";
 import { EVENT_NAME } from "@/shared/config";
@@ -17,7 +17,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: EVENT_NAME,
-  description: EVENT_NAME,
+  description: `${EVENT_NAME} · Builder Board — 로그인 없이 참여하는 행사 웹앱`,
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
