@@ -50,3 +50,7 @@ ui-debug.log
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# mcp tooling
+/.playwright-mcp/
+/.serena/
