@@ -11,6 +11,11 @@ export interface KeywordData {
   uid: string;
   text: string;
   type: KeywordType;
+  /**
+   * Moderation flag (admin console, task #6, Admin SDK-only write). Docs
+   * are created without this field — treat missing as `false` (visible).
+   */
+  hidden: boolean;
   createdAt: Timestamp;
 }
 

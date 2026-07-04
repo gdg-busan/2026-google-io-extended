@@ -11,6 +11,7 @@ export const keywordConverter: FirestoreDataConverter<KeywordData> = {
       uid: data.uid,
       text: data.text,
       type: data.type,
+      hidden: data.hidden ?? false,
       createdAt: data.createdAt,
     };
   },
