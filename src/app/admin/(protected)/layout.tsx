@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { Box, Container } from "@radix-ui/themes";
 import { AdminNav } from "@/widgets/admin-panel";
 import { requireAdminSession } from "@/shared/lib/admin-auth";
 
@@ -29,9 +30,11 @@ export default async function AdminProtectedLayout({
   }
 
   return (
-    <div>
+    <Box>
       <AdminNav />
-      {children}
-    </div>
+      <Container size="3" px="4" py="5">
+        {children}
+      </Container>
+    </Box>
   );
 }
