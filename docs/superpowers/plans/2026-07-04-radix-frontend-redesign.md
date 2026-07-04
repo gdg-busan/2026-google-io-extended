@@ -349,11 +349,12 @@ Expected: FAIL — `hasRegisteredCardAtom` 미정의.
 
 - [ ] **Step 3: `my-card.ts` 구현**
 
+**주의: 이 프로젝트엔 rxjs가 없다.** `collectionObservable`은 `src/shared/lib/firestore-observable.ts`의 커스텀 `MinimalObservable<T>`(`subscribe({next, error?}) => { unsubscribe }`만 가진 최소 인터페이스)를 반환한다. 아래 코드는 동일 인터페이스로 `Card[]` 스트림을 첫 항목(또는 null)으로 매핑한다.
+
 ```tsx
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { atom } from "jotai";
 import { atomWithObservable } from "jotai/utils";
-import { of } from "rxjs"; // 없으면 아래 대체 구현 사용
 import { db } from "@/shared/firebase";
 import { collectionObservable } from "@/shared/lib";
 import { uidAtom } from "@/entities/session";
@@ -363,20 +364,45 @@ import type { Card } from "./types";
 const cardsCollection = collection(db, "cards").withConverter(cardConverter);
 
 /** 현재 uid가 소유한 카드(첫 항목) 또는 null. uid가 없으면 항상 null. */
-export const myCardAtom = atomWithObservable<Card | null>((get) => {
-  const uid = get(uidAtom);
-  if (!uid) return collectionObservableEmpty();
-  return mapFirst(
-    collectionObservable(
-      query(cardsCollection, where("ownerUid", "==", uid), orderBy("createdAt", "desc")),
-    ),
-  );
-}, { initialValue: null });
+export const myCardAtom = atomWithObservable<Card | null>(
+  (get) => {
+    const uid = get(uidAtom);
+    if (!uid) {
+      // uid 없음 → Firestore 접근 없이 즉시 null 방출.
+      return {
+        subscribe(observer: { next: (v: Card | null) => void }) {
+          observer.next(null);
+          return { unsubscribe() {} };
+        },
+      };
+    }
+    const source = collectionObservable(
+      query(
+        cardsCollection,
+        where("ownerUid", "==", uid),
+        orderBy("createdAt", "desc"),
+      ),
+    );
+    return {
+      subscribe(observer: {
+        next: (v: Card | null) => void;
+        error?: (e: unknown) => void;
+      }) {
+        const sub = source.subscribe({
+          next: (cards) => observer.next(cards[0] ?? null),
+          error: observer.error,
+        });
+        return { unsubscribe: () => sub.unsubscribe() };
+      },
+    };
+  },
+  { initialValue: null },
+);
 
 export const hasRegisteredCardAtom = atom((get) => get(myCardAtom) !== null);
 ```
 
-주의: `atomWithObservable` 콜백은 rxjs `Observable`을 반환해야 한다. `collectionObservable`이 `Observable<Card[]>`를 준다고 가정하고, `mapFirst`/`collectionObservableEmpty` 헬퍼는 `src/shared/lib`의 실제 시그니처에 맞춰 구현한다. `src/shared/lib`의 `firestore-observable` 구현을 먼저 읽고(`collectionObservable`이 rxjs인지 커스텀인지 확인), rxjs면 `import { map } from "rxjs"; const mapFirst = (o) => o.pipe(map((cards: Card[]) => cards[0] ?? null))`, 빈값은 `of(null)`. 커스텀 옵저버블이면 동일 시맨틱의 래퍼를 작성한다.
+`collectionObservable<T>`은 `MinimalObservable<(T & { id: string })[]>`를 반환하고 `T = CardData`(converter 적용)이므로 `cards`는 `Card[]`, `cards[0] ?? null`은 `Card | null`이다. 기존 `entities/card/model/atoms.ts`가 동일 패턴을 쓰니 참고할 것.
 
 - [ ] **Step 4: 테스트 통과 확인**
 
